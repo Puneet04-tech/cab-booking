@@ -188,12 +188,8 @@ export function MapComponent({ pickup, stops = [], dropoff, onDistanceCalculated
       setError(null);
 
       try {
-        if (pickup) {
-          const coords = await geocodeAddress(pickup);
-          setPickupCoords(coords);
-        } else {
-          setPickupCoords(null);
-        }
+        // compute all coords first
+        const pickupResult = pickup ? await geocodeAddress(pickup) : null;
 
         const stopsArray: Coordinates[] = [];
         if (Array.isArray(stops) && stops.length > 0) {
@@ -204,15 +200,19 @@ export function MapComponent({ pickup, stops = [], dropoff, onDistanceCalculated
             if (coords) stopsArray.push(coords);
           }
         }
-        setStopCoords(stopsArray);
 
-        if (dropoff) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          const coords = await geocodeAddress(dropoff);
-          setDropoffCoords(coords);
-        } else {
-          setDropoffCoords(null);
-        }
+        const dropoffResult = dropoff ? (() => {
+          return new Promise<Coordinates | null>(async resolve => {
+            await new Promise(r => setTimeout(r, 1000));
+            const coords = await geocodeAddress(dropoff);
+            resolve(coords);
+          });
+        })() : null;
+
+        // update state in one go to avoid jitter
+        setPickupCoords(pickupResult);
+        setStopCoords(stopsArray);
+        setDropoffCoords(await dropoffResult);
       } catch (err) {
         setError('Failed to load map locations');
       } finally {
