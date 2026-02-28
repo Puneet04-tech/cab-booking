@@ -8,6 +8,10 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- ──────────────────────────────────────────────────────────────
 --  USERS
 -- ──────────────────────────────────────────────────────────────
+-- NOTE: the `password_hash` column was added after initial deployment.
+-- If you're upgrading an existing database, run:
+--   ALTER TABLE users ADD COLUMN password_hash TEXT NOT NULL DEFAULT '';
+-- then manually populate values or force users to reset passwords.
 CREATE TABLE users (
   id                BIGSERIAL     PRIMARY KEY,
   clerk_id          TEXT          NOT NULL UNIQUE,
@@ -17,6 +21,7 @@ CREATE TABLE users (
   phone             TEXT,
   bio               TEXT,
   profile_picture   TEXT,
+  password_hash     TEXT          NOT NULL,  -- hashed password (added later)
   role              TEXT          NOT NULL DEFAULT 'rider' CHECK (role IN ('rider', 'driver', 'admin')),
   rating            NUMERIC(3,2)  NOT NULL DEFAULT 5.00,
   wallet_balance    NUMERIC(12,2) NOT NULL DEFAULT 0.00,
