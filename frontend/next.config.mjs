@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+import path from 'path';
+
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     domains: [
@@ -13,6 +16,11 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  },
+  webpack(config) {
+    // ensure the '@/...' alias works in both development and production builds
+    config.resolve.alias['@'] = path.resolve(__dirname);
+    return config;
   },
 };
 
