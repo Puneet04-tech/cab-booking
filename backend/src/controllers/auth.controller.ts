@@ -93,7 +93,7 @@ export async function login(req: Request, res: Response) {
     }
 
     const user = rows[0];
-    logger.info(`login attempt for ${email}, stored hash length ${user.password_hash.length}`);
+    logger.info(`login attempt for ${email}, stored hash len=${user.password_hash.length}, password len=${password.length}`);
     const match = await bcrypt.compare(password, user.password_hash);
     logger.info(`bcrypt comparison result: ${match}`);
     if (!match) {
