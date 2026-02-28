@@ -10,7 +10,6 @@
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=frontend\" \"npm run dev --workspace=backend\"",
     "build": "npm run build --workspace=frontend && npm run build --workspace=backend",
-    // default start runs backend only (used by Render)
     "start": "npm run start:backend",
     "start:all": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
     "start:frontend": "npm run start --workspace=frontend",
