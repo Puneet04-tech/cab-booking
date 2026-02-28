@@ -64,7 +64,8 @@ export async function register(req: Request, res: Response) {
     res.status(201).json({ token, user: { id: user.id, email: user.email, name, role: user.role } });
   } catch (err) {
     logger.error("register error:", err);
-    res.status(500).json({ error: "Registration failed." });
+    // include message for debugging (remove in prod)
+    res.status(500).json({ error: "Registration failed.", details: (err as Error).message });
   }
 }
 
@@ -101,7 +102,7 @@ export async function login(req: Request, res: Response) {
     res.json({ token, user: { id: user.id, email: user.email, name, role: user.role } });
   } catch (err) {
     logger.error("login error:", err);
-    res.status(500).json({ error: "Login failed." });
+    res.status(500).json({ error: "Login failed.", details: (err as Error).message });
   }
 }
 
