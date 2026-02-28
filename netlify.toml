@@ -1,0 +1,27 @@
+# Netlify configuration for deploying the frontend
+# This assumes the Next.js app lives in the `frontend` subfolder.
+
+[build]
+  # install dependencies and build the Next.js site
+  command = "cd frontend && npm install && npm run build"
+  publish = "frontend/.next"
+
+[build.environment]
+  NODE_ENV = "production"
+  # you can declare additional environment variables here or in the Netlify UI
+
+# The official plugin understands the App Router and handles rewrites/headers
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Redirect all /api traffic to your backend service (replace with your URL)
+[[redirects]]
+  from = "/api/*"
+  to = "https://<BACKEND_URL>/:splat"
+  status = 200
+  force = true
+
+# Optional dev settings used by `netlify dev`
+[dev]
+  command = "cd frontend && npm run dev"
+  port = 3000

@@ -1,0 +1,27 @@
+# Render configuration for both frontend and backend services plus a PostgreSQL database.
+# Deploy this repository to Render by connecting your GitHub/GitLab account and
+# specifying this manifest file in the service creation wizard (``render.yaml``).
+
+services:
+  - type: web
+    name: cab-booking-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: "cd backend && npm install && npm run build"
+    startCommand: "cd backend && npm run start"
+    # you can configure environment variables in the Render dashboard;
+    # DATABASE_URL will automatically be populated if you attach the database
+
+  - type: web
+    name: cab-booking-frontend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: "cd frontend && npm install && npm run build"
+    startCommand: "cd frontend && npm run start"
+
+databases:
+  - name: cab_booking_db
+    plan: free
+    engine: postgresql
