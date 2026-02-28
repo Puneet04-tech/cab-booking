@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { query } from "../config/database";
 import logger from "../utils/logger";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
+import { v4 as uuidv4 } from "uuid";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const SALT_ROUNDS = 12;
@@ -15,6 +16,8 @@ function makeToken(payload: object) {
 // POST /api/auth/register
 export async function register(req: Request, res: Response) {
   const { firstName, lastName, email, password, role = "rider", lat, lng } = req.body;
+  // generate a unique clerk identifier (was required by schema)
+  const clerkId = uuidv4();
   if (!firstName || !email || !password) {
     res.status(400).json({ error: "firstName, email, and password are required." });
     return;
@@ -37,9 +40,10 @@ export async function register(req: Request, res: Response) {
     const safeRole = role === "driver" ? "driver" : "rider";
 
     const result = await query(
-      `INSERT INTO users(email, first_name, last_name, password_hash, role)
-       VALUES($1, $2, $3, $4, $5) RETURNING id, email, first_name, last_name, role`,
-      [email, firstName, lastName ?? "", hash, safeRole]
+      `INSERT INTO users(clerk_id, email, first_name, last_name, password_hash, role)
+       VALUES($1, $2, $3, $4, $5, $6)
+       RETURNING id, email, first_name, last_name, role`,
+      [clerkId, email, firstName, lastName ?? "", hash, safeRole]
     );
     const user = (result.rows as { id: string; email: string; first_name: string; last_name: string; role: string }[])[0];
     const name = [user.first_name, user.last_name].filter(Boolean).join(" ");
