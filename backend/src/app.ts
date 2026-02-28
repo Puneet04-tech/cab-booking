@@ -28,15 +28,22 @@ app.use(helmet());
 
 // allow requests from one or more frontend origins (comma-separated env var)
 const rawOrigins = process.env.FRONTEND_URL || "http://localhost:3000";
-const allowedOrigins = rawOrigins.split(",").map(o => o.trim()).filter(Boolean);
+let allowedOrigins = rawOrigins.split(",").map(o => o.trim()).filter(Boolean);
 console.log("CORS allowed origins:", allowedOrigins);
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) console.log("Incoming request origin:", origin);
+  next();
+});
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // if no origin (e.g. server-to-server) allow it
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
+      // support wildcard
+      if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
       console.warn(`Blocked CORS request from ${origin}`);
