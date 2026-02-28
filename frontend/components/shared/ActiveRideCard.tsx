@@ -1,9 +1,10 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { AlertCircle, DollarSign } from "lucide-react";
 import { rideApi } from "@/lib/api";
-import { MapComponent } from "@/components/MapComponent";
+const MapComponent = dynamic(() => import("@/components/MapComponent").then((mod) => mod.MapComponent), { ssr: false });
 
 interface ActiveRide {
   id: string;

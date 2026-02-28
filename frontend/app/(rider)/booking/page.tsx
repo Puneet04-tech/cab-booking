@@ -1,9 +1,10 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useCallback, useEffect } from "react";
 import { Navigation, X, Plus, ChevronDown, Tag, CreditCard } from "lucide-react";
 import toast from "react-hot-toast";
-import { MapComponent } from "@/components/MapComponent";
+const MapComponent = dynamic(() => import("@/components/MapComponent").then((mod) => mod.MapComponent), { ssr: false });
 import { rideApi, paymentApi } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import PaymentModal from "@/components/shared/PaymentModal";

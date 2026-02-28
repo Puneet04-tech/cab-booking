@@ -1,9 +1,10 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { X, MapPin, ArrowRight, Calendar, CreditCard, User, Car, Clock, Route, Download, Loader2, Mail } from "lucide-react";
 import { paymentApi } from "@/lib/api";
-import { MapComponent } from "@/components/MapComponent";
+const MapComponent = dynamic(() => import("@/components/MapComponent").then((mod) => mod.MapComponent), { ssr: false });
 
 interface ReceiptData {
   id: string;

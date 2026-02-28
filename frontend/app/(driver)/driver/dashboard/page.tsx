@@ -1,8 +1,9 @@
 ﻿"use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect, useCallback } from "react";
 import { DollarSign, Car, Star, Clock, Check, X, Navigation, Phone, Wifi, WifiOff } from "lucide-react";
-import { MapComponent } from "@/components/MapComponent";
+const MapComponent = dynamic(() => import("@/components/MapComponent").then((mod) => mod.MapComponent), { ssr: false });
 import toast from "react-hot-toast";
 import { rideApi, driverApi } from "@/lib/api";
 
