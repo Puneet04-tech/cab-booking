@@ -25,13 +25,28 @@ const app: Application = express();
 
 // ─── Security & Utility Middleware ────────────────────────────────────────────
 app.use(helmet());
+
+// allow requests from one or more frontend origins (comma-separated env var)
+const rawOrigins = process.env.FRONTEND_URL || "http://localhost:3000";
+const allowedOrigins = rawOrigins.split(",").map(o => o.trim()).filter(Boolean);
+console.log("CORS allowed origins:", allowedOrigins);
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
+    origin: (origin, callback) => {
+      // if no origin (e.g. server-to-server) allow it
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      console.warn(`Blocked CORS request from ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
 );
+
 app.use(compression());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
