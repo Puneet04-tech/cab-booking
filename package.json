@@ -13,7 +13,8 @@
     "start": "concurrently \"npm run start --workspace=frontend\" \"npm run start --workspace=backend\"",
     "lint": "npm run lint --workspace=frontend && npm run lint --workspace=backend"
   },
-  "devDependencies": {
+  "dependencies": {
     "concurrently": "^8.2.2"
-  }
+  },
+  "devDependencies": {}
 }
